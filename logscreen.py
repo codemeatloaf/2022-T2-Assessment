@@ -212,7 +212,8 @@ RUN = True
 # show screen started
 start()
 
-cur.execute('''CREATE TABLE IF NOT EXIST game_data (usr_id INT, usr_nm TEXT)''')
+cur.execute("CREATE TABLE game_data (usr_id INT, usr_nm TEXT)")
+print('Table Created')
 
 # mainloop
 while RUN:
@@ -236,6 +237,9 @@ while RUN:
 
         # exit
         RUN = False
+        cur.execute("DROP TABLE game_data")
+        print('Table Dropped')
+        con.close()  
 
     BLANK_B1.draw()
     
@@ -247,7 +251,9 @@ while RUN:
     for event in event_list:
         if event.type == pygame.QUIT:
             RUN = False
-            if RUN == False:  
+            if RUN == False: 
+                cur.execute("DROP TABLE game_data")
+                print('Table Dropped')
                 con.close()             
                 exit()              
     GROUP.update(event_list)
