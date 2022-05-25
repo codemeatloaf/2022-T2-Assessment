@@ -212,7 +212,9 @@ RUN = True
 # show screen started
 start()
 
-cur.execute("CREATE TABLE game_data (usr_id INT, usr_nm TEXT)")
+# SQL table create
+
+cur.execute("CREATE TABLE IF NOT EXISTS game_data (usr_id INT, usr_nm TEXT)")
 print('Table Created')
 
 # mainloop
@@ -223,18 +225,23 @@ while RUN:
     # draw buttons
     if START_B1.draw():
         # open game.py
-        os.system('python3 c:/Users/ciara/OneDrive/PC/Shared/Documents/GitHub/2022-T2-Assessment/code/game.py')
+        os.system('python3 game.py')
+        RUN - False
         exit()
 
     if START_B2.draw():
         # open game.py
-        os.system('python3 c:/Users/ciara/OneDrive/PC/Shared/Documents/GitHub/2022-T2-Assessment/code/game.py')
+        os.system('python3 game.py')
+        RUN = False
         exit()
+
 
     if EXIT_B.draw():
 
         # exit
         RUN = False
+
+        # drop and exit SQL table
         cur.execute("DROP TABLE game_data")
         print('Table Dropped')
         con.close()  
