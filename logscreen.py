@@ -222,13 +222,11 @@ while RUN:
 
     # draw buttons
     if START_B1.draw():
-        # print('START')
         # open game.py
         os.system('python3 c:/Users/ciara/OneDrive/PC/Shared/Documents/GitHub/2022-T2-Assessment/code/game.py')
         exit()
 
     if START_B2.draw():
-        # print('START')
         # open game.py
         os.system('python3 c:/Users/ciara/OneDrive/PC/Shared/Documents/GitHub/2022-T2-Assessment/code/game.py')
         exit()
