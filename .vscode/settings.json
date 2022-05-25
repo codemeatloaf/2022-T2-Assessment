@@ -1,9 +1,15 @@
 {
     "cSpell.words": [
+        "autofalse",
+        "backcolor",
         "blit",
         "ciara",
+        "collidepoint",
         "Gohu",
+        "KEYDOWN",
+        "MOUSEBUTTONDOWN",
         "pygame",
-        "SRCALPHA"
+        "SRCALPHA",
+        "topleft"
     ]
 }
