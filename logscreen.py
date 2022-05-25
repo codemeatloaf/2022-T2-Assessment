@@ -1,8 +1,12 @@
 # imports
 import pygame
+import sqlite3
 import sys
 import os
 
+# SQL variables
+con = sqlite3.connect('game_data.db')
+cur = con.cursor()
 
 # variables
 FPS = 60
@@ -11,7 +15,7 @@ HEIGHT, WIDTH = 1200, 600
 WIN = pygame.display.set_mode((HEIGHT, WIDTH), 0, 60)
 CLOCK = pygame.time.Clock()
 
-# colours
+# colors
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
@@ -81,7 +85,7 @@ class Button():
         # reset action
         return action
 
-# print to show logscreen started
+# print to show log-screen started
 def start():
     
     # prove start screen happened
@@ -164,6 +168,7 @@ class TextInputBox(pygame.sprite.Sprite):
             if event.type == pygame.KEYDOWN and self.active:
 
                 if len(self.text) >= 3:
+                    
                     self.text = self.text[:-1]
                     print("Overfill error")
                 else:
@@ -207,6 +212,8 @@ RUN = True
 # show screen started
 start()
 
+cur.execute('''CREATE TABLE IF NOT EXIST game_data (usr_id INT, usr_nm TEXT)''')
+
 # mainloop
 while RUN:
 
@@ -240,7 +247,8 @@ while RUN:
     for event in event_list:
         if event.type == pygame.QUIT:
             RUN = False
-            if RUN == False:               
+            if RUN == False:  
+                con.close()             
                 exit()              
     GROUP.update(event_list)
 
