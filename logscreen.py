@@ -8,6 +8,10 @@ import os
 con = sqlite3.connect('game_data.db')
 cur = con.cursor()
 
+# SQL table create
+cur.execute("CREATE TABLE IF NOT EXISTS game_data (usr_id INT, usr_nm TEXT)")
+print('Table Created')
+
 # variables
 FPS = 60
 FPSCLOCK = pygame.time.Clock()
@@ -94,7 +98,7 @@ def start():
 # text box outline
 class InputBox():
 
-    # create init variales
+    # create init variables
     def __init__(self, x, y, image, scale):
         width = 150
         height = 100
@@ -172,122 +176,34 @@ class TextInputBox1(pygame.sprite.Sprite):
                     self.text = self.text[:-1]
                     print("Overfill error")
                     self.active = False
-                else:
-                    print("No error")
-
-                # return key makes active false
-                if event.key == pygame.K_RETURN:
-
-                    # exit active
-                    self.active = False
-
-                    # test to see if return is working
-                    print("Return", (len(self.text) + 1))
-
-                # delete removes letter
-                elif event.key == pygame.K_BACKSPACE:
-                    self.text = self.text[:-1]
-
-                    # test to see if delete is working
-                    print("Deleted", (len(self.text) + 1))
-
-                else:
-                    self.text += event.unicode
-
-                # render text
-                self.render_text()
-
-# text box input 2
-class TextInputBox2(pygame.sprite.Sprite):
-
-    # create init variables
-    def __init__(self, x, y, w, font):
-        super().__init__()
-        self.color = (255, 255, 255)
-        self.backcolor = None
-
-        # mouse position
-        self.pos = (x, y) 
-        self.width = w
-        self.font = font
-
-        # active is autofalse
-        self.active = False
-
-        # text is input
-        self.text = ""
-
-        # render the text
-        self.render_text()
-
-    # render text on screen
-    def render_text(self):
-
-        # define text surface
-        t_surf = self.font.render(self.text, True, self.color, self.backcolor)
-
-        # make surface an image
-        self.image = pygame.Surface((max(self.width, t_surf.get_width()+10), t_surf.get_height()+10), pygame.SRCALPHA)
-
-        # fill as backcolor
-        if self.backcolor:
-            self.image.fill(self.backcolor)
-
-        # blit to surface
-        self.image.blit(t_surf, (5, 5))
-
-        # rectangle of text
-        pygame.draw.rect(self.image, self.color, self.image.get_rect().inflate(-2, -2), 2)
-
-        # rectangle get pos
-        self.rect = self.image.get_rect(topleft = self.pos)
-
-    # update variables
-    def update(self, event_list):
-
-        # mouse button events
-        for event in event_list:
-
-            # find mouse and if above text area become active
-            if event.type == pygame.MOUSEBUTTONDOWN and not self.active:
-
-                # if mouse is colliding
-                self.active = self.rect.collidepoint(event.pos)
-
-            # if active and key pressed make key event
-            if event.type == pygame.KEYDOWN and self.active:
-
-                if len(self.text) >= 3:
                     
-                    self.text = self.text[:-1]
-                    print("Overfill error")
-                    self.active = False
                 else:
                     print("No error")
 
                 # return key makes active false
-                if event.key == pygame.K_RETURN:
+                if event.key == pygame.K_RETURN and len(self.text) > 0:
 
-
-                    # exit active
+                    # exit activated
                     self.active = False
+                    # sql = "INSERT INTO TABLE (usr_id) VALUES (?)"
+                    # cur.execute("INSERT INTO game_data (usr_id, usr_nm) VALUES (1, (self.text,))")
 
                     # test to see if return is working
-                    print("Return", (len(self.text) + 1))
+                    print("Returning on ", (len(self.text) + 1))
 
                 # delete removes letter
-                elif event.key == pygame.K_BACKSPACE:
-                    self.text = self.text[:-1]
+                if event.key == pygame.K_BACKSPACE:
+                    
+                    len(self.text) - len(self.text)
 
                     # test to see if delete is working
-                    print("Deleted", (len(self.text) + 1))
+                    print("Length of text is now", (len(self.text)))
 
                 else:
                     self.text += event.unicode
 
                 # render text
                 self.render_text()
-
 
 # define sprites on screen
 # start & exit buttons
@@ -296,14 +212,14 @@ START_B2 = Button(150, 100, START_IMG, 0.8)
 EXIT_B = Button(1000, 500, EXIT_IMG, 0.5)
 
 # input 1
-BLANK_B1 = InputBox(500, 300, BLANK_IMG, 1)
-TEXT_B1 = TextInputBox1(510, 310, 80, FONT1)
+BLANK_B1 = InputBox(500, 100, BLANK_IMG, 1)
+TEXT_B1 = TextInputBox1(510, 110, 80, FONT1)
 GROUP = pygame.sprite.Group(TEXT_B1)
 
 # input 2
-BLANK_B2 = InputBox(500, 100, BLANK_IMG, 1)
-TEXT_B2 = TextInputBox2(510, 110, 80, FONT1)
-GROUP2 = pygame.sprite.Group(TEXT_B2)
+#BLANK_B2 = InputBox(500, 300, BLANK_IMG, 1)
+#TEXT_B2 = TextInputBox2(510, 310, 80, FONT1)
+#GROUP2 = pygame.sprite.Group(TEXT_B2)
 
 
 # keep mainloop running
@@ -311,10 +227,6 @@ RUN = True
 
 # show screen started
 start()
-
-# SQL table create
-cur.execute("CREATE TABLE IF NOT EXISTS game_data (usr_id INT, usr_nm TEXT)")
-print('Table Created')
 
 # mainloop
 while RUN:
@@ -326,7 +238,7 @@ while RUN:
     if START_B1.draw():
         # open game.py
         os.system('python3 game.py')
-        RUN - False
+        RUN = False
         exit()
 
     # start button 2 draw
@@ -352,8 +264,8 @@ while RUN:
     GROUP.draw(WIN)
 
     # input 2 draw
-    BLANK_B2.draw()
-    GROUP2.draw(WIN)
+    #BLANK_B2.draw()
+    #GROUP2.draw(WIN)
 
     # event handler
     CLOCK.tick(60)
