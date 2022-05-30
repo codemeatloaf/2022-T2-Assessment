@@ -35,7 +35,6 @@ START_IMG = pygame.image.load('start_btn.png')
 EXIT_IMG = pygame.image.load('exit_btn.png')
 BLANK_IMG = pygame.image.load('blank_inp.png')
 
-
 # create button class
 class Button():
 
@@ -171,36 +170,98 @@ class TextInputBox1(pygame.sprite.Sprite):
             # if active and key pressed make key event
             if event.type == pygame.KEYDOWN and self.active:
 
-                if len(self.text) >= 3:
+                # return key
+                if event.key == pygame.K_RETURN:
                     
-                    self.text = self.text[:-1]
-                    print("Overfill error")
                     self.active = False
-                    
-                else:
-                    print("No error")
+                    pass
+                
+                # individual keys
+                if event.key == pygame.K_q:
+                    self.text += 'q'
+                
+                if event.key == pygame.K_w:
+                    self.text += 'w'
 
-                # return key makes active false
-                if event.key == pygame.K_RETURN and len(self.text) > 0:
+                if event.key == pygame.K_e:
+                    self.text += 'e'
 
-                    # exit activated
-                    self.active = False
-                    # sql = "INSERT INTO TABLE (usr_id) VALUES (?)"
-                    # cur.execute("INSERT INTO game_data (usr_id, usr_nm) VALUES (1, (self.text,))")
+                if event.key == pygame.K_r:
+                    self.text += 'r'
 
-                    # test to see if return is working
-                    print("Returning on ", (len(self.text) + 1))
+                if event.key == pygame.K_t:
+                    self.text += 't'
 
-                # delete removes letter
+                if event.key == pygame.K_y:
+                    self.text += 'y'
+
+                if event.key == pygame.K_u:
+                    self.text += 'u'
+
+                if event.key == pygame.K_i:
+                    self.text += 'i'
+
+                if event.key == pygame.K_o:
+                    self.text += 'o'
+
+                if event.key == pygame.K_p:
+                    self.text += 'p'
+
+                if event.key == pygame.K_a:
+                    self.text += 'a'
+
+                if event.key == pygame.K_s:
+                    self.text += 's'
+
+                if event.key == pygame.K_d:
+                    self.text += 'd'
+
+                if event.key == pygame.K_f:
+                    self.text += 'f'
+
+                if event.key == pygame.K_g:
+                    self.text += 'g'
+
+                if event.key == pygame.K_h:
+                    self.text += 'h'
+
+                if event.key == pygame.K_j:
+                    self.text += 'j'
+
+                if event.key == pygame.K_k:
+                    self.text += 'k'
+
+                if event.key == pygame.K_l:
+                    self.text += 'l'
+
+                if event.key == pygame.K_z:
+                    self.text += 'z'
+
+                if event.key == pygame.K_x:
+                    self.text += 'x'
+
+                if event.key == pygame.K_c:
+                    self.text += 'c'
+
+                if event.key == pygame.K_v:
+                    self.text += 'v'
+
+                if event.key == pygame.K_b:
+                    self.text += 'b'
+
+                if event.key == pygame.K_n:
+                    self.text += 'n'
+
+                if event.key == pygame.K_m:
+                    self.text += 'm'
+
+                # delete key
                 if event.key == pygame.K_BACKSPACE:
                     
-                    len(self.text) - len(self.text)
+                    self.text = self.text[:-1]
 
                     # test to see if delete is working
                     print("Length of text is now", (len(self.text)))
-
-                else:
-                    self.text += event.unicode
 
                 # render text
                 self.render_text()
@@ -215,12 +276,6 @@ EXIT_B = Button(1000, 500, EXIT_IMG, 0.5)
 BLANK_B1 = InputBox(500, 100, BLANK_IMG, 1)
 TEXT_B1 = TextInputBox1(510, 110, 80, FONT1)
 GROUP = pygame.sprite.Group(TEXT_B1)
-
-# input 2
-#BLANK_B2 = InputBox(500, 300, BLANK_IMG, 1)
-#TEXT_B2 = TextInputBox2(510, 310, 80, FONT1)
-#GROUP2 = pygame.sprite.Group(TEXT_B2)
-
 
 # keep mainloop running
 RUN = True
