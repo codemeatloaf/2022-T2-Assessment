@@ -8,9 +8,22 @@ import os
 con = sqlite3.connect('game_data.db')
 cur = con.cursor()
 
-# SQL table create
-cur.execute("CREATE TABLE IF NOT EXISTS game_data (usr_id INT, usr_nm TEXT)")
+# SQL table drop if already exists
+cur.execute("DROP TABLE IF EXISTS game_data")
+print('Table Dropped')
+
+# SQL table create if not exists
+cur.execute("CREATE TABLE IF NOT EXISTS game_data (usr_id INT PRIMARY KEY, usr_nm TEXT)")
 print('Table Created')
+
+# commit table
+con.commit()
+print('Table Committed')
+
+# print startup number
+print('Total number of rows in table at startup:', cur.rowcount)
+
+
 
 # variables
 FPS = 60
@@ -65,7 +78,7 @@ class Button():
         pos = pygame.mouse.get_pos()
         # print(pos)
 
-        # hover check
+        # find collide point
         if self.rect.collidepoint(pos):
             # print('HOVER')
             
@@ -75,8 +88,6 @@ class Button():
                 # set action and clicked to true
                 self.clicked = True
                 action = True
-            
-                # print('CLICK')
             
         # reset clicked
         if pygame.mouse.get_pressed()[0] == 0:
@@ -161,14 +172,40 @@ class TextInputBox1(pygame.sprite.Sprite):
         # mouse button events
         for event in event_list:
 
-            # find mouse and if above text area become active
+            # find mouse and if over text area become active
             if event.type == pygame.MOUSEBUTTONDOWN and not self.active:
-
+                
                 # if mouse is colliding
                 self.active = self.rect.collidepoint(event.pos)
 
             # if active and key pressed make key event
             if event.type == pygame.KEYDOWN and self.active:
+
+                # set length to 3
+                if len(self.text) > 2:
+
+                    # print when length gets too much
+                    print('Length of text is:', len(self.text), 'which is overfilled.')
+
+                    # exit when length gets too much
+                    self.active = False
+
+                    # remove extra key
+                    self.text = self.text[:-1]
+                    print('Removed text')
+
+                    # set input as username in database
+                    # execute command, where ? = self.text
+                    CMD1 = "INSERT INTO game_data (usr_nm, usr_id) VALUES ('test1', 1)"
+                    cur.execute(CMD1)
+                    con.commit()
+                    
+                    # print to check if executed
+                    print('SQL Query executed')
+
+                    # print table update
+                    print('Table updated to:')
+                    os.system('litecli -D game_data.db -e "select * from game_data"')
 
                 # return key
                 if event.key == pygame.K_RETURN:
@@ -179,7 +216,7 @@ class TextInputBox1(pygame.sprite.Sprite):
                 # individual keys
                 if event.key == pygame.K_q:
                     self.text += 'q'
-                
+                    
                 if event.key == pygame.K_w:
                     self.text += 'w'
 
@@ -310,7 +347,7 @@ while RUN:
         RUN = False
 
         # drop and exit SQL table
-        cur.execute("DROP TABLE game_data")
+        cur.execute("DROP TABLE IF EXISTS game_data")
         print('Table Dropped')
         con.close()  
 
@@ -329,8 +366,8 @@ while RUN:
         if event.type == pygame.QUIT:
             RUN = False
             if RUN == False: 
-                cur.execute("DROP TABLE game_data")
-                print('Table Dropped')
+                #cur.execute("DROP TABLE game_data")
+                #print('Table Dropped')
                 con.close()             
                 exit()              
     GROUP.update(event_list)
