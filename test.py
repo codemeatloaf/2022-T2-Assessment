@@ -15,7 +15,8 @@ cur.execute("CREATE TABLE IF NOT EXISTS test_db (usr_id PRIMARY KEY, usr_nm TEXT
 print('Test Table Created')
 con.commit()
 
-cur.execute("INSERT INTO test_db (usr_nm, usr_id) VALUES ('abc', 1)")
+
+cur.execute("INSERT INTO test_db (usr_nm, usr_id) VALUES (?, 1)")
 print('Inserted into usr_nm')
 con.commit()
 
