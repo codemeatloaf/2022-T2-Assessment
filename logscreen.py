@@ -21,7 +21,7 @@ con.commit()
 print('Table Committed')
 
 # print startup number
-print('Total number of rows in table at startup:', cur.rowcount)
+print('Total number of rows in table at startup:', cur.rowcount + 1)
 
 
 
@@ -47,6 +47,9 @@ FONT1 = pygame.font.SysFont("GohuFont NF", 92)
 START_IMG = pygame.image.load('start_btn.png')
 EXIT_IMG = pygame.image.load('exit_btn.png')
 BLANK_IMG = pygame.image.load('blank_inp.png')
+
+# text input is blank
+INPUT_TEXT1 = ""
 
 # create button class
 class Button():
@@ -169,6 +172,33 @@ class TextInputBox1(pygame.sprite.Sprite):
     # update variables
     def update(self, event_list):
 
+        # save information to database
+        def save():
+
+            # set input text to global
+            global INPUT_TEXT1
+
+            # check if save function started
+            print("Save Function Started")
+
+            # set input as username in database
+            # execute command, where ? = self.text
+            # VAR1 = Input
+            VAR1 = INPUT_TEXT1
+            cur.execute("INSERT INTO game_data (usr_nm, usr_id) VALUES (?, 1)", (VAR1,))
+
+            # commit
+            con.commit()
+
+            # print to check if executed
+            print('SQL Query executed')
+
+            # print table update
+            print('Table updated to:')
+            os.system('litecli -D game_data.db -e "select * from game_data"')
+
+            pass
+
         # mouse button events
         for event in event_list:
 
@@ -182,123 +212,232 @@ class TextInputBox1(pygame.sprite.Sprite):
             if event.type == pygame.KEYDOWN and self.active:
 
                 # set length to 3
+                # set INPUT_TEXT1 as global
+                global INPUT_TEXT1
+
                 if len(self.text) > 2:
-
+                    
                     # print when length gets too much
-                    print('Length of text is:', len(self.text), 'which is overfilled.')
+                    print('Length of text is:', len(self.text) + 1, 'which is overfilled.')
 
-                    # exit when length gets too much
+                    # remove single character
+                    self.text = self.text[:-1]
+                    #INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                    # test to see if delete is working
+                    print("Length of text is now", (len(self.text)) + 1)
+                    #print("Input Text is now:", INPUT_TEXT1)
+
+                    # exit input box
                     self.active = False
 
-                    # remove extra key
-                    self.text = self.text[:-1]
-                    print('Removed text')
+                    # start save function
+                    save()
 
-                    # set input as username in database
-                    # execute command, where ? = self.text
-                    CMD1 = "INSERT INTO game_data (usr_nm, usr_id) VALUES ('test1', 1)"
-                    cur.execute(CMD1)
-                    con.commit()
-                    
-                    # print to check if executed
-                    print('SQL Query executed')
-
-                    # print table update
-                    print('Table updated to:')
-                    os.system('litecli -D game_data.db -e "select * from game_data"')
 
                 # return key
                 if event.key == pygame.K_RETURN:
-                    
+
+                    # start save function
+                    save()
+
+                    # exit input box
                     self.active = False
-                    pass
                 
+
                 # individual keys
                 if event.key == pygame.K_q:
                     self.text += 'q'
-                    
+                    INPUT_TEXT1 += 'q'
+
+                    # input_text after button
+                    print("Input Text is now: ", INPUT_TEXT1)
+
                 if event.key == pygame.K_w:
                     self.text += 'w'
+                    INPUT_TEXT1 += 'w'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_e:
                     self.text += 'e'
+                    INPUT_TEXT1 += 'e'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_r:
                     self.text += 'r'
+                    INPUT_TEXT1 += 'r'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_t:
                     self.text += 't'
+                    INPUT_TEXT1 += 't'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_y:
                     self.text += 'y'
+                    INPUT_TEXT1 += 'y'
+                    
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_u:
                     self.text += 'u'
+                    INPUT_TEXT1 += 'u'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_i:
                     self.text += 'i'
+                    INPUT_TEXT1 += 'i'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_o:
                     self.text += 'o'
+                    INPUT_TEXT1 += 'o'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_p:
                     self.text += 'p'
+                    INPUT_TEXT1 += 'p'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_a:
                     self.text += 'a'
+                    INPUT_TEXT1 += 'a'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_s:
                     self.text += 's'
+                    INPUT_TEXT1 += 's'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_d:
                     self.text += 'd'
+                    INPUT_TEXT1 += 'd'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_f:
                     self.text += 'f'
+                    INPUT_TEXT1 += 'f'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_g:
                     self.text += 'g'
+                    INPUT_TEXT1 += 'g'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_h:
                     self.text += 'h'
+                    INPUT_TEXT1 += 'h'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_j:
                     self.text += 'j'
+                    INPUT_TEXT1 += 'j'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_k:
                     self.text += 'k'
+                    INPUT_TEXT1 += 'k'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_l:
                     self.text += 'l'
+                    INPUT_TEXT1 += 'l'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_z:
                     self.text += 'z'
+                    INPUT_TEXT1 += 'z'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_x:
                     self.text += 'x'
+                    INPUT_TEXT1 += 'x'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_c:
                     self.text += 'c'
+                    INPUT_TEXT1 += 'c'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_v:
                     self.text += 'v'
+                    INPUT_TEXT1 += 'v'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_b:
                     self.text += 'b'
+                    INPUT_TEXT1 += 'b'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_n:
                     self.text += 'n'
+                    INPUT_TEXT1 += 'n'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 if event.key == pygame.K_m:
                     self.text += 'm'
+                    INPUT_TEXT1 += 'm'
+
+                    # input_text after q button
+                    print("Input Text is now: ", INPUT_TEXT1)
 
                 # delete key
                 if event.key == pygame.K_BACKSPACE:
                     
                     self.text = self.text[:-1]
+                    INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                     # test to see if delete is working
                     print("Length of text is now", (len(self.text)))
+                    print("Input Text is now: ", INPUT_TEXT1)
+                    
 
                 # render text
                 self.render_text()
