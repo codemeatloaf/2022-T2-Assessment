@@ -1,5 +1,8 @@
 # imports
 import pygame
+import colorama
+from colorama import Fore
+import pyautogui
 import sqlite3
 import sys
 import os
@@ -37,7 +40,7 @@ INPUT_TEXT2 = ""
 INPUT_TRUE2 = False
 
 # prove start screen happened
-print('(START) Logscreen.pys Started')
+print('('  + Fore.GREEN + 'START'  + Fore.WHITE + ') Logscreen.pys Started')
 
 # ! == SQL / START ============================================================================================================================================
 
@@ -47,15 +50,15 @@ cur = con.cursor()
 
 # SQL table drop if already exists
 cur.execute("DROP TABLE IF EXISTS game_data")
-print('(START) Table Dropped')
+print('('  + Fore.GREEN + 'START'  + Fore.WHITE + ') Table Dropped')
 
 # SQL table create if not exists
 cur.execute("CREATE TABLE IF NOT EXISTS game_data (usr_id INT PRIMARY KEY, usr_nm TEXT)")
-print('(START) Table Created')
+print('('  + Fore.GREEN + 'START'  + Fore.WHITE + ') Table Created')
 
 # commit table
 con.commit()
-print('(START) Table Committed')
+print('(' + Fore.GREEN + 'START'  + Fore.WHITE + ') Table Committed')
 
 def player_usernames():
     SELECT_Q = """SELECT * FROM game_data;"""
@@ -64,7 +67,7 @@ def player_usernames():
     print(RECORD)
 
 # show table at start
-print('(START) Table on start:'), player_usernames()
+print('(' + Fore.GREEN + 'START' + Fore.WHITE + ') Table on start:'), player_usernames()
 
 # ! == CLASSES ============================================================================================================================================
 
@@ -194,49 +197,52 @@ class TextInputBox1(pygame.sprite.Sprite):
             global INPUT_TRUE1
 
             # check if save function started
-            print("(SAVE) Save Function Started")
+            print('(' + Fore.BLUE + 'SAVE' + Fore.WHITE + ') Save Function Started')
 
             # set input as username in database
             # execute command, where ? = self.text
-            # VAR1 = Input
             VAR1 = INPUT_TEXT1
             INPUT_TRUE1 = True
 
-            print('(SAVE) INPUT_TRUE1 = ', INPUT_TRUE1)
+            print('(' + Fore.BLUE + 'SAVE' + Fore.WHITE + ') INPUT_TRUE1 = ', INPUT_TRUE1)
 
             cur.execute("INSERT OR REPLACE INTO game_data (usr_nm, usr_id) VALUES (?, 1)", (VAR1,))
             con.commit()
 
             # print to check if executed
-            print('(SAVE) SQL Query executed')
+            print('(' + Fore.BLUE + 'SAVE' + Fore.WHITE + ') SQL Query executed')
 
             # print table update
-            print('(SAVE) Table updated to:'), player_usernames()
+            print('(' + Fore.BLUE + 'SAVE' + Fore.WHITE + ') Table updated to:'), player_usernames()
 
         # mouse button events
         for event in event_list:
 
             # find mouse and if over text area become active
             if event.type == pygame.MOUSEBUTTONDOWN and not self.active:
-                
-                # if mouse is colliding
+
                 self.active = self.rect.collidepoint(event.pos)
+
 
             # if active and key pressed make key event
             if event.type == pygame.KEYDOWN and self.active:
 
-                # set INPUT_TEXT1 as global
                 global INPUT_TEXT1
-                global INPUT_TRUE1 
-                    
+
                 # return key
                 if event.key == pygame.K_RETURN:
 
-                    # start save function
+                    # check if length is over 0
                     if len(self.text) > 0:
+                        
+                        # save 
                         save1()
+
                     else:
-                        print('(SAVE) Not enough')
+
+                        # show error
+                        print('[' + Fore.RED + 'ERROR' + Fore.WHITE + '] Input one is blank')
+                        pyautogui.alert("[ERROR] Input one is blank")
 
                     # exit input box
                     self.active = False
@@ -261,16 +267,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL Q) Length is:', len(self.text) + 1)
+                        print('[OVERFILL Q] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL Q) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL Q) self.text is now:", self.text)
-                        print("(OVERFILL Q) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL Q] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL Q] self.text is now:", self.text)
+                        print("[OVERFILL Q] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_w:
                     self.text += 'w'
@@ -280,16 +286,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL W) Length is:', len(self.text) + 1)
+                        print('[OVERFILL W] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL W) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL W) self.text is now:", self.text)
-                        print("(OVERFILL W) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL W] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL W] self.text is now:", self.text)
+                        print("[OVERFILL W] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_e:
                     self.text += 'e'
@@ -299,16 +305,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL E) Length is:', len(self.text) + 1)
+                        print('[OVERFILL E] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL E) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL E) self.text is now:", self.text)
-                        print("(OVERFILL E) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL E] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL E] self.text is now:", self.text)
+                        print("[OVERFILL E] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_r:
                     self.text += 'r'
@@ -318,16 +324,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL R) Length is:', len(self.text) + 1)
+                        print('[OVERFILL R] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL R) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL R) self.text is now:", self.text)
-                        print("(OVERFILL R) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL R] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL R] self.text is now:", self.text)
+                        print("[OVERFILL R] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_t:
                     self.text += 't'
@@ -337,16 +343,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL T) Length is:', len(self.text) + 1)
+                        print('[OVERFILL T] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL T) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL T) self.text is now:", self.text)
-                        print("(OVERFILL T) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL T] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL T] self.text is now:", self.text)
+                        print("[OVERFILL T] Input Text is now:", INPUT_TEXT1)
                         
                 if event.key == pygame.K_y:
                     self.text += 'y'
@@ -356,16 +362,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL Y) Length is:', len(self.text) + 1)
+                        print('[OVERFILL Y] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL Y) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL Y) self.text is now:", self.text)
-                        print("(OVERFILL Y) Input Text is now:", INPUT_TEXT1) 
+                        print("[OVERFILL Y] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL Y] self.text is now:", self.text)
+                        print("[OVERFILL Y] Input Text is now:", INPUT_TEXT1) 
 
                 if event.key == pygame.K_u:
                     self.text += 'u'
@@ -375,16 +381,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL U) Length is:', len(self.text) + 1)
+                        print('[OVERFILL U] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL U) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL U) self.text is now:", self.text)
-                        print("(OVERFILL U) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL U] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL U] self.text is now:", self.text)
+                        print("[OVERFILL U] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_i:
                     self.text += 'i'
@@ -394,16 +400,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL I) Length is:', len(self.text) + 1)
+                        print('[OVERFILL I] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL I) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL I) self.text is now:", self.text)
-                        print("(OVERFILL I) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL I] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL I] self.text is now:", self.text)
+                        print("[OVERFILL I] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_o:
                     self.text += 'o'
@@ -413,16 +419,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL O) Length is:', len(self.text) + 1)
+                        print('[OVERFILL O] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL O) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL O) self.text is now:", self.text)
-                        print("(OVERFILL O) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL O] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL O] self.text is now:", self.text)
+                        print("[OVERFILL O] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_p:
                     self.text += 'p'
@@ -432,16 +438,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL P) Length is:', len(self.text) + 1)
+                        print('[OVERFILL P] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL P) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL P) self.text is now:", self.text)
-                        print("(OVERFILL P) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL P] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL P] self.text is now:", self.text)
+                        print("[OVERFILL P] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_a:
                     self.text += 'a'
@@ -451,16 +457,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL A) Length is:', len(self.text) + 1)
+                        print('[OVERFILL A] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL A) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL A) self.text is now:", self.text)
-                        print("(OVERFILL A) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL A] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL A] self.text is now:", self.text)
+                        print("[OVERFILL A] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_s:
                     self.text += 's'
@@ -470,16 +476,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL S) Length is:', len(self.text) + 1)
+                        print('[OVERFILL S] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL S) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL S) self.text is now:", self.text)
-                        print("(OVERFILL S) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL S] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL S] self.text is now:", self.text)
+                        print("[OVERFILL S] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_d:
                     self.text += 'd'
@@ -489,16 +495,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL D) Length is:', len(self.text) + 1)
+                        print('[OVERFILL D] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL D) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL D) self.text is now:", self.text)
-                        print("(OVERFILL D) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL D] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL D] self.text is now:", self.text)
+                        print("[OVERFILL D] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_f:
                     self.text += 'f'
@@ -508,16 +514,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL F) Length is:', len(self.text) + 1)
+                        print('[OVERFILL F] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL F) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL F) self.text is now:", self.text)
-                        print("(OVERFILL F) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL F] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL F] self.text is now:", self.text)
+                        print("[OVERFILL F] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_g:
                     self.text += 'g'
@@ -527,16 +533,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL G) Length is:', len(self.text) + 1)
+                        print('[OVERFILL G] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL G) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL G) self.text is now:", self.text)
-                        print("(OVERFILL G) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL G] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL G] self.text is now:", self.text)
+                        print("[OVERFILL G] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_h:
                     self.text += 'h'
@@ -546,16 +552,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL H) Length is:', len(self.text) + 1)
+                        print('[OVERFILL H] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL H) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL H) self.text is now:", self.text)
-                        print("(OVERFILL H) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL H] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL H] self.text is now:", self.text)
+                        print("[OVERFILL H] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_j:
                     self.text += 'j'
@@ -565,16 +571,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL J) Length is:', len(self.text) + 1)
+                        print('[OVERFILL J] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL J) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL J) self.text is now:", self.text)
-                        print("(OVERFILL J) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL J] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL J] self.text is now:", self.text)
+                        print("[OVERFILL J] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_k:
                     self.text += 'k'
@@ -584,16 +590,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL K) Length is:', len(self.text) + 1)
+                        print('[OVERFILL K] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL K) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL K) self.text is now:", self.text)
-                        print("(OVERFILL K) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL K] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL K] self.text is now:", self.text)
+                        print("[OVERFILL K] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_l:
                     self.text += 'l'
@@ -603,16 +609,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL L) Length is:', len(self.text) + 1)
+                        print('[OVERFILL L] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL L) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL L) self.text is now:", self.text)
-                        print("(OVERFILL L) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL L] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL L] self.text is now:", self.text)
+                        print("[OVERFILL L] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_z:
                     self.text += 'z'
@@ -622,16 +628,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL Z) Length is:', len(self.text) + 1)
+                        print('[OVERFILL Z] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL Z) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL Z) self.text is now:", self.text)
-                        print("(OVERFILL Z) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL Z] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL Z] self.text is now:", self.text)
+                        print("[OVERFILL Z] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_x:
                     self.text += 'x'
@@ -641,16 +647,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL X) Length is:', len(self.text) + 1)
+                        print('[OVERFILL X] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL X) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL X) self.text is now:", self.text)
-                        print("(OVERFILL X) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL X] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL X] self.text is now:", self.text)
+                        print("[OVERFILL X] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_c:
                     self.text += 'c'
@@ -660,16 +666,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL C) Length is:', len(self.text) + 1)
+                        print('[OVERFILL C] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL C) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL C) self.text is now:", self.text)
-                        print("(OVERFILL C) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL C] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL C] self.text is now:", self.text)
+                        print("[OVERFILL C] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_v:
                     self.text += 'v'
@@ -679,16 +685,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL V) Length is:', len(self.text) + 1)
+                        print('[OVERFILL V] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL V) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL V) self.text is now:", self.text)
-                        print("(OVERFILL V) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL V] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL V] self.text is now:", self.text)
+                        print("[OVERFILL V] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_b:
                     self.text += 'b'
@@ -698,16 +704,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL B) Length is:', len(self.text) + 1)
+                        print('[OVERFILL B] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL B) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL B) self.text is now:", self.text)
-                        print("(OVERFILL B) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL B] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL B] self.text is now:", self.text)
+                        print("[OVERFILL B] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_n:
                     self.text += 'n'
@@ -717,16 +723,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL N) Length is:', len(self.text) + 1)
+                        print('[OVERFILL N] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL N) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL N) self.text is now:", self.text)
-                        print("(OVERFILL N) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL N] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL N] self.text is now:", self.text)
+                        print("[OVERFILL N] Input Text is now:", INPUT_TEXT1)
 
                 if event.key == pygame.K_m:
                     self.text += 'm'
@@ -736,16 +742,16 @@ class TextInputBox1(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL M) Length is:', len(self.text) + 1)
+                        print('[OVERFILL M] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL M) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL M) self.text is now:", self.text)
-                        print("(OVERFILL M) Input Text is now:", INPUT_TEXT1)
+                        print("[OVERFILL M] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL M] self.text is now:", self.text)
+                        print("[OVERFILL M] Input Text is now:", INPUT_TEXT1)
 
                 # render text
                 self.render_text()
@@ -810,7 +816,7 @@ class TextInputBox2(pygame.sprite.Sprite):
             global INPUT_TRUE2
 
             # check if save function started
-            print("(SAVE) Save Function Started")
+            print('(' + Fore.BLUE + 'SAVE' + Fore.WHITE + ') Save Function Started')
 
             # set input as username in database
             # execute command, where ? = self.text
@@ -818,16 +824,16 @@ class TextInputBox2(pygame.sprite.Sprite):
             VAR2 = INPUT_TEXT2
             INPUT_TRUE2 = True
 
-            print('(SAVE) INPUT_TRUE2 = ', INPUT_TRUE2)
+            print('(' + Fore.BLUE + 'SAVE' + Fore.WHITE + ') INPUT_TRUE2 = ', INPUT_TRUE2)
 
             cur.execute("INSERT OR REPLACE INTO game_data (usr_nm, usr_id) VALUES (?, 2)", (VAR2,))
             con.commit()
 
             # print to check if executed
-            print('(SAVE) SQL Query executed')
+            print('(' + Fore.BLUE + 'SAVE' + Fore.WHITE + ') SQL Query executed')
 
             # print table update
-            print('(SAVE) Table updated to:'), player_usernames()
+            print('(' + Fore.BLUE + 'SAVE' + Fore.WHITE + ') Table updated to:'), player_usernames()
 
         # mouse button events
         for event in event_list:
@@ -835,7 +841,6 @@ class TextInputBox2(pygame.sprite.Sprite):
             # find mouse and if over text area become active
             if event.type == pygame.MOUSEBUTTONDOWN and not self.active:
                 
-                # if mouse is colliding
                 self.active = self.rect.collidepoint(event.pos)
 
             # if active and key pressed make key event
@@ -848,11 +853,17 @@ class TextInputBox2(pygame.sprite.Sprite):
                 # return key
                 if event.key == pygame.K_RETURN:
 
-                    # start save function
+                    # check if length is over 0
                     if len(self.text) > 0:
+                        
+                        # save
                         save2()
+                        
                     else:
-                        print('(SAVE) Not enough')
+
+                        # show error
+                        print('[' + Fore.RED + 'ERROR' + Fore.WHITE + '] Input two is blank')
+                        pyautogui.alert('[ERROR] Input two is blank')
 
                     # exit input box
                     self.active = False
@@ -877,16 +888,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL Q) Length is:', len(self.text) + 1)
+                        print('[OVERFILL Q] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL Q) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL Q) self.text is now:", self.text)
-                        print("(OVERFILL Q) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL Q] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL Q] self.text is now:", self.text)
+                        print("[OVERFILL Q] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_w:
                     self.text += 'w'
@@ -896,16 +907,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL W) Length is:', len(self.text) + 1)
+                        print('[OVERFILL W] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL W) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL W) self.text is now:", self.text)
-                        print("(OVERFILL W) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL W] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL W] self.text is now:", self.text)
+                        print("[OVERFILL W] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_e:
                     self.text += 'e'
@@ -915,16 +926,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL E) Length is:', len(self.text) + 1)
+                        print('[OVERFILL E] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL E) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL E) self.text is now:", self.text)
-                        print("(OVERFILL E) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL E] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL E] self.text is now:", self.text)
+                        print("[OVERFILL E] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_r:
                     self.text += 'r'
@@ -934,16 +945,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL R) Length is:', len(self.text) + 1)
+                        print('[OVERFILL R] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL R) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL R) self.text is now:", self.text)
-                        print("(OVERFILL R) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL R] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL R] self.text is now:", self.text)
+                        print("[OVERFILL R] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_t:
                     self.text += 't'
@@ -953,16 +964,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL T) Length is:', len(self.text) + 1)
+                        print('[OVERFILL T] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL T) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL T) self.text is now:", self.text)
-                        print("(OVERFILL T) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL T] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL T] self.text is now:", self.text)
+                        print("[OVERFILL T] Input Text is now:", INPUT_TEXT2)
                         
                 if event.key == pygame.K_y:
                     self.text += 'y'
@@ -972,16 +983,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL Y) Length is:', len(self.text) + 1)
+                        print('[OVERFILL Y] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL Y) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL Y) self.text is now:", self.text)
-                        print("(OVERFILL Y) Input Text is now:", INPUT_TEXT2) 
+                        print("[OVERFILL Y] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL Y] self.text is now:", self.text)
+                        print("[OVERFILL Y] Input Text is now:", INPUT_TEXT2) 
 
                 if event.key == pygame.K_u:
                     self.text += 'u'
@@ -991,16 +1002,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL U) Length is:', len(self.text) + 1)
+                        print('[OVERFILL U] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL U) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL U) self.text is now:", self.text)
-                        print("(OVERFILL U) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL U] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL U] self.text is now:", self.text)
+                        print("[OVERFILL U] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_i:
                     self.text += 'i'
@@ -1010,16 +1021,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL I) Length is:', len(self.text) + 1)
+                        print('[OVERFILL I] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL I) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL I) self.text is now:", self.text)
-                        print("(OVERFILL I) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL I] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL I] self.text is now:", self.text)
+                        print("[OVERFILL I] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_o:
                     self.text += 'o'
@@ -1029,16 +1040,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL O) Length is:', len(self.text) + 1)
+                        print('[OVERFILL O] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL O) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL O) self.text is now:", self.text)
-                        print("(OVERFILL O) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL O] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL O] self.text is now:", self.text)
+                        print("[OVERFILL O] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_p:
                     self.text += 'p'
@@ -1048,16 +1059,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL P) Length is:', len(self.text) + 1)
+                        print('[OVERFILL P] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL P) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL P) self.text is now:", self.text)
-                        print("(OVERFILL P) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL P] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL P] self.text is now:", self.text)
+                        print("[OVERFILL P] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_a:
                     self.text += 'a'
@@ -1067,16 +1078,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL A) Length is:', len(self.text) + 1)
+                        print('[OVERFILL A] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL A) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL A) self.text is now:", self.text)
-                        print("(OVERFILL A) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL A] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL A] self.text is now:", self.text)
+                        print("[OVERFILL A] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_s:
                     self.text += 's'
@@ -1086,16 +1097,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL S) Length is:', len(self.text) + 1)
+                        print('[OVERFILL S] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL S) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL S) self.text is now:", self.text)
-                        print("(OVERFILL S) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL S] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL S] self.text is now:", self.text)
+                        print("[OVERFILL S] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_d:
                     self.text += 'd'
@@ -1105,16 +1116,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL D) Length is:', len(self.text) + 1)
+                        print('[OVERFILL D] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL D) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL D) self.text is now:", self.text)
-                        print("(OVERFILL D) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL D] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL D] self.text is now:", self.text)
+                        print("[OVERFILL D] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_f:
                     self.text += 'f'
@@ -1124,16 +1135,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL F) Length is:', len(self.text) + 1)
+                        print('[OVERFILL F] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL F) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL F) self.text is now:", self.text)
-                        print("(OVERFILL F) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL F] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL F] self.text is now:", self.text)
+                        print("[OVERFILL F] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_g:
                     self.text += 'g'
@@ -1143,16 +1154,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL G) Length is:', len(self.text) + 1)
+                        print('[OVERFILL G] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL G) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL G) self.text is now:", self.text)
-                        print("(OVERFILL G) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL G] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL G] self.text is now:", self.text)
+                        print("[OVERFILL G] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_h:
                     self.text += 'h'
@@ -1162,16 +1173,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL H) Length is:', len(self.text) + 1)
+                        print('[OVERFILL H] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL H) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL H) self.text is now:", self.text)
-                        print("(OVERFILL H) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL H] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL H] self.text is now:", self.text)
+                        print("[OVERFILL H] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_j:
                     self.text += 'j'
@@ -1181,16 +1192,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL J) Length is:', len(self.text) + 1)
+                        print('[OVERFILL J] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL J) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL J) self.text is now:", self.text)
-                        print("(OVERFILL J) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL J] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL J] self.text is now:", self.text)
+                        print("[OVERFILL J] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_k:
                     self.text += 'k'
@@ -1200,16 +1211,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL K) Length is:', len(self.text) + 1)
+                        print('[OVERFILL K] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL K) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL K) self.text is now:", self.text)
-                        print("(OVERFILL K) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL K] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL K] self.text is now:", self.text)
+                        print("[OVERFILL K] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_l:
                     self.text += 'l'
@@ -1219,16 +1230,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL L) Length is:', len(self.text) + 1)
+                        print('[OVERFILL L] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL L) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL L) self.text is now:", self.text)
-                        print("(OVERFILL L) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL L] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL L] self.text is now:", self.text)
+                        print("[OVERFILL L] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_z:
                     self.text += 'z'
@@ -1238,16 +1249,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL Z) Length is:', len(self.text) + 1)
+                        print('[OVERFILL Z] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL Z) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL Z) self.text is now:", self.text)
-                        print("(OVERFILL Z) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL Z] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL Z] self.text is now:", self.text)
+                        print("[OVERFILL Z] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_x:
                     self.text += 'x'
@@ -1257,16 +1268,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL X) Length is:', len(self.text) + 1)
+                        print('[OVERFILL X] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL X) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL X) self.text is now:", self.text)
-                        print("(OVERFILL X) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL X] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL X] self.text is now:", self.text)
+                        print("[OVERFILL X] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_c:
                     self.text += 'c'
@@ -1276,16 +1287,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL C) Length is:', len(self.text) + 1)
+                        print('[OVERFILL C] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL C) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL C) self.text is now:", self.text)
-                        print("(OVERFILL C) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL C] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL C] self.text is now:", self.text)
+                        print("[OVERFILL C] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_v:
                     self.text += 'v'
@@ -1295,16 +1306,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL V) Length is:', len(self.text) + 1)
+                        print('[OVERFILL V] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL V) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL V) self.text is now:", self.text)
-                        print("(OVERFILL V) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL V] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL V] self.text is now:", self.text)
+                        print("[OVERFILL V] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_b:
                     self.text += 'b'
@@ -1314,16 +1325,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL B) Length is:', len(self.text) + 1)
+                        print('[OVERFILL B] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL B) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL B) self.text is now:", self.text)
-                        print("(OVERFILL B) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL B] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL B] self.text is now:", self.text)
+                        print("[OVERFILL B] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_n:
                     self.text += 'n'
@@ -1333,16 +1344,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL N) Length is:', len(self.text) + 1)
+                        print('[OVERFILL N] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL N) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL N) self.text is now:", self.text)
-                        print("(OVERFILL N) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL N] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL N] self.text is now:", self.text)
+                        print("[OVERFILL N] Input Text is now:", INPUT_TEXT2)
 
                 if event.key == pygame.K_m:
                     self.text += 'm'
@@ -1352,16 +1363,16 @@ class TextInputBox2(pygame.sprite.Sprite):
                     if len(self.text) > 3:
                 
                         # print when length gets too much
-                        print('(OVERFILL M) Length is:', len(self.text) + 1)
+                        print('[OVERFILL M] Length is:', len(self.text) + 1)
 
                         # remove single character
                         self.text = self.text[:-1]
                         INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                         # test to see if delete is working
-                        print("(OVERFILL M) Length is now", (len(self.text)) + 1)
-                        print("(OVERFILL M) self.text is now:", self.text)
-                        print("(OVERFILL M) Input Text is now:", INPUT_TEXT2)
+                        print("[OVERFILL M] Length is now", (len(self.text)) + 1)
+                        print("[OVERFILL M] self.text is now:", self.text)
+                        print("[OVERFILL M] Input Text is now:", INPUT_TEXT2)
 
                 # render text
                 self.render_text()
@@ -1398,22 +1409,24 @@ while RUN:
     if START_B1.draw():
         
         if INPUT_TRUE1 == True:
-            print('(START) Input1 passed')
+            print('(' + Fore.GREEN +  'START'  + Fore.WHITE +  ') Input1 passed')
 
             if INPUT_TRUE2 == True:
-                print('(START) Input2 passed')
+                print('(' + Fore.GREEN + 'START' + Fore.WHITE + ') Input2 passed')
 
                 # open game.py
-                print('(START) Button 1 Pressed')
+                print('(' + Fore.GREEN + 'START' + Fore.WHITE + ') Button 1 Pressed')
                 os.system('python3 game.py')
                 RUN = False
                 exit()
 
             else:
-                print('[ERROR] Input2 False')
+                print('[' + Fore.RED + 'ERROR' + Fore.WHITE + '] Input2 False')
+                pyautogui.alert("[ERROR] Input two is missing")
 
         else:
-            print('[ERROR] Input1 False')
+            print('[' + Fore.RED + 'ERROR' + Fore.WHITE + '] Input1 False')
+            pyautogui.alert("[ERROR] Input one is Missing")
 
     # exit button draw
     if EXIT_B.draw():
@@ -1422,9 +1435,9 @@ while RUN:
         RUN = False
 
         # drop and exit SQL table
-        print('(EXIT) Exit Button Pressed')
+        print('(' + Fore.YELLOW + 'EXIT' + Fore.WHITE + ') Exit Button Pressed')
         cur.execute("DROP TABLE IF EXISTS game_data")
-        print('(EXIT) Table Dropped')
+        print('(' + Fore.YELLOW +'EXIT' + Fore.WHITE + ') Table Dropped')
         con.close()  
 
     # input 1 draw
@@ -1436,6 +1449,7 @@ while RUN:
     GROUP2.draw(WIN)
 
 # ! == EVENT HANDLER ============================================================================================================================================
+    # NOTE: i have no fucking clue what this does
 
     # event handler
     CLOCK.tick(60)
@@ -1445,7 +1459,7 @@ while RUN:
             RUN = False
             if RUN == False: 
                 con.close()   
-                print("(EXIT) Login closed")          
+                print("(" + Fore.YELLOW + "EXIT" + Fore.WHITE + ") Login closed")          
                 exit()         
 
     GROUP1.update(event_list)

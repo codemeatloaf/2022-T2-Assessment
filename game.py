@@ -1,5 +1,8 @@
 # imports
 import pygame
+import colorama
+from colorama import Fore
+import pyautogui
 import sqlite3
 import sys
 import os
@@ -33,7 +36,7 @@ FONT1 = pygame.font.SysFont("GohuFont NF", 92)
 print('\n')
 
 # prove start screen happened
-print('(START) Game.py Started')
+print('(' + Fore.GREEN + 'START'  + Fore.WHITE + ') Game.py Started')
     
 # SQL variables
 con = sqlite3.connect('game_data')
@@ -46,7 +49,7 @@ def player_usernames():
     RECORD = cur.fetchall()
     print(RECORD)
 
-print('(START) Users: '), player_usernames()
+print('(' + Fore.GREEN + 'START'  + Fore.WHITE + ') Users: '), player_usernames()
 
 # ! == SPRITES ============================================================================================================================================
 
@@ -120,9 +123,9 @@ while RUN:
         RUN = False
 
         # drop and exit SQL table
-        print('(EXIT) Exit Button Pressed')
+        print('(' + Fore.YELLOW + 'EXIT' + Fore.WHITE + ') Exit Button Pressed')
         cur.execute("DROP TABLE IF EXISTS game_data")
-        print('(EXIT) Table Dropped')
+        print('(' + Fore.YELLOW + 'EXIT' + Fore.WHITE + ') Table Dropped')
         con.close()  
 
 # ! == EVENT HANDLER ============================================================================================================================================
@@ -135,7 +138,7 @@ while RUN:
             RUN = False
             if RUN == False: 
                 con.close()   
-                print("(EXIT) Game closed")          
+                print("(' + Fore.YELLOW + 'EXIT' + Fore.WHITE + ') Game closed")          
                 exit()         
 
     # actually update screen

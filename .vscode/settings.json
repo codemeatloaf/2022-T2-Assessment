@@ -10,6 +10,7 @@
         "litecli",
         "Logscreen",
         "MOUSEBUTTONDOWN",
+        "pyautogui",
         "pygame",
         "SRCALPHA",
         "topleft"
