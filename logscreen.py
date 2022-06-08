@@ -208,9 +208,6 @@ class TextInputBox1(pygame.sprite.Sprite):
                 # if mouse is colliding
                 self.active = self.rect.collidepoint(event.pos)
 
-                # check active
-                print("(ACTIVE) Input became active")
-
             # if active and key pressed make key event
             if event.type == pygame.KEYDOWN and self.active:
 
@@ -241,8 +238,7 @@ class TextInputBox1(pygame.sprite.Sprite):
                     # test to see if delete is working
                     print("(DELETE) Length of text is now", (len(self.text)))
 
-                # individual keys
-                # if key is pressed
+                # input keys
                 if event.key == pygame.K_q:
 
                     # add to self.text + input_text1
@@ -778,7 +774,7 @@ while RUN:
         RUN = False
         exit()
 
-    # exit draw
+    # exit button draw
     if EXIT_B.draw():
 
         # exit
