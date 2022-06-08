@@ -4,27 +4,6 @@ import sqlite3
 import sys
 import os
 
-# SQL variables
-con = sqlite3.connect('game_data.db')
-cur = con.cursor()
-
-# SQL table drop if already exists
-cur.execute("DROP TABLE IF EXISTS game_data")
-print('Table Dropped')
-
-# SQL table create if not exists
-cur.execute("CREATE TABLE IF NOT EXISTS game_data (usr_id INT PRIMARY KEY, usr_nm TEXT)")
-print('Table Created')
-
-# commit table
-con.commit()
-print('Table Committed')
-
-# print startup number
-print('Total number of rows in table at startup:', cur.rowcount + 1)
-
-
-
 # variables
 FPS = 60
 FPSCLOCK = pygame.time.Clock()
@@ -50,6 +29,30 @@ BLANK_IMG = pygame.image.load('blank_inp.png')
 
 # text input is blank
 INPUT_TEXT1 = ""
+
+# prove start screen happened
+print('(START) Logscreen Started')
+
+    
+# SQL variables
+con = sqlite3.connect('game_data.db')
+cur = con.cursor()
+
+# SQL table drop if already exists
+cur.execute("DROP TABLE IF EXISTS game_data")
+print('(START) Table Dropped')
+
+# SQL table create if not exists
+cur.execute("CREATE TABLE IF NOT EXISTS game_data (usr_id INT PRIMARY KEY, usr_nm TEXT)")
+print('(START) Table Created')
+
+# commit table
+con.commit()
+print('(START) Table Committed')
+
+# show table at start
+print('(START) Table updated to:')
+os.system('litecli -D game_data.db -e "select * from game_data"')
 
 # create button class
 class Button():
@@ -102,12 +105,6 @@ class Button():
         # reset action
         return action
 
-# print to show log-screen started
-def start():
-    
-    # prove start screen happened
-    print('Logscreen Started')
-
 # text box outline
 class InputBox():
 
@@ -121,6 +118,7 @@ class InputBox():
 
     # draw input
     def draw(self):
+
         # print on screen
         WIN.blit(self.image, (self.rect.x, self.rect.y))
 
@@ -136,6 +134,8 @@ class TextInputBox1(pygame.sprite.Sprite):
         # mouse position
         self.pos = (x, y) 
         self.width = w
+
+        # set font
         self.font = font
 
         # active is autofalse
@@ -179,22 +179,21 @@ class TextInputBox1(pygame.sprite.Sprite):
             global INPUT_TEXT1
 
             # check if save function started
-            print("Save Function Started")
+            print("(SAVE) Save Function Started")
 
             # set input as username in database
             # execute command, where ? = self.text
             # VAR1 = Input
             VAR1 = INPUT_TEXT1
-            cur.execute("INSERT INTO game_data (usr_nm, usr_id) VALUES (?, 1)", (VAR1,))
 
-            # commit
+            cur.execute("INSERT OR REPLACE INTO game_data (usr_nm, usr_id) VALUES (?, 1)", (VAR1,))
             con.commit()
 
             # print to check if executed
-            print('SQL Query executed')
+            print('(SAVE) SQL Query executed')
 
             # print table update
-            print('Table updated to:')
+            print('(SAVE) Table updated to:')
             os.system('litecli -D game_data.db -e "select * from game_data"')
 
             pass
@@ -208,225 +207,35 @@ class TextInputBox1(pygame.sprite.Sprite):
                 # if mouse is colliding
                 self.active = self.rect.collidepoint(event.pos)
 
+                cur.execute("DELETE FROM game_data WHERE usr_id = 1;")
+
+                # check if table is there
+                print('(ACTIVE) Table updated to:')
+                os.system('litecli -D game_data.db -e "select * from game_data"')
+
+                # check active
+                print("(ACTIVE) Input became active")
+
             # if active and key pressed make key event
             if event.type == pygame.KEYDOWN and self.active:
 
-                # set length to 3
                 # set INPUT_TEXT1 as global
                 global INPUT_TEXT1
 
-                if len(self.text) > 2:
+
+
                     
-                    # print when length gets too much
-                    print('Length of text is:', len(self.text) + 1, 'which is overfilled.')
-
-                    # remove single character
-                    self.text = self.text[:-1]
-                    #INPUT_TEXT1 = INPUT_TEXT1[:-1]
-
-                    # test to see if delete is working
-                    print("Length of text is now", (len(self.text)) + 1)
-                    #print("Input Text is now:", INPUT_TEXT1)
-
-                    # exit input box
-                    self.active = False
-
-                    # start save function
-                    save()
-
-
                 # return key
                 if event.key == pygame.K_RETURN:
 
                     # start save function
-                    save()
+                    if len(self.text) > 0:
+                        save()
+                    else:
+                        print('(SAVE) Not enough')
 
                     # exit input box
                     self.active = False
-                
-
-                # individual keys
-                if event.key == pygame.K_q:
-                    self.text += 'q'
-                    INPUT_TEXT1 += 'q'
-
-                    # input_text after button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_w:
-                    self.text += 'w'
-                    INPUT_TEXT1 += 'w'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_e:
-                    self.text += 'e'
-                    INPUT_TEXT1 += 'e'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_r:
-                    self.text += 'r'
-                    INPUT_TEXT1 += 'r'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_t:
-                    self.text += 't'
-                    INPUT_TEXT1 += 't'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_y:
-                    self.text += 'y'
-                    INPUT_TEXT1 += 'y'
-                    
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_u:
-                    self.text += 'u'
-                    INPUT_TEXT1 += 'u'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_i:
-                    self.text += 'i'
-                    INPUT_TEXT1 += 'i'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_o:
-                    self.text += 'o'
-                    INPUT_TEXT1 += 'o'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_p:
-                    self.text += 'p'
-                    INPUT_TEXT1 += 'p'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_a:
-                    self.text += 'a'
-                    INPUT_TEXT1 += 'a'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_s:
-                    self.text += 's'
-                    INPUT_TEXT1 += 's'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_d:
-                    self.text += 'd'
-                    INPUT_TEXT1 += 'd'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_f:
-                    self.text += 'f'
-                    INPUT_TEXT1 += 'f'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_g:
-                    self.text += 'g'
-                    INPUT_TEXT1 += 'g'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_h:
-                    self.text += 'h'
-                    INPUT_TEXT1 += 'h'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_j:
-                    self.text += 'j'
-                    INPUT_TEXT1 += 'j'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_k:
-                    self.text += 'k'
-                    INPUT_TEXT1 += 'k'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_l:
-                    self.text += 'l'
-                    INPUT_TEXT1 += 'l'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_z:
-                    self.text += 'z'
-                    INPUT_TEXT1 += 'z'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_x:
-                    self.text += 'x'
-                    INPUT_TEXT1 += 'x'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_c:
-                    self.text += 'c'
-                    INPUT_TEXT1 += 'c'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_v:
-                    self.text += 'v'
-                    INPUT_TEXT1 += 'v'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_b:
-                    self.text += 'b'
-                    INPUT_TEXT1 += 'b'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_n:
-                    self.text += 'n'
-                    INPUT_TEXT1 += 'n'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
-
-                if event.key == pygame.K_m:
-                    self.text += 'm'
-                    INPUT_TEXT1 += 'm'
-
-                    # input_text after q button
-                    print("Input Text is now: ", INPUT_TEXT1)
 
                 # delete key
                 if event.key == pygame.K_BACKSPACE:
@@ -435,9 +244,505 @@ class TextInputBox1(pygame.sprite.Sprite):
                     INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                     # test to see if delete is working
-                    print("Length of text is now", (len(self.text)))
-                    print("Input Text is now: ", INPUT_TEXT1)
-                    
+                    print("(DELETE) Length of text is now", (len(self.text)))
+
+                # individual keys
+                # if key is pressed
+                if event.key == pygame.K_q:
+
+                    # add to self.text + input_text1
+                    self.text += 'q'
+                    INPUT_TEXT1 += 'q'
+                        
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL Q) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL Q) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL Q) self.text is now:", self.text)
+                        print("(OVERFILL Q) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_w:
+                    self.text += 'w'
+                    INPUT_TEXT1 += 'w'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL W) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL W) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL W) self.text is now:", self.text)
+                        print("(OVERFILL W) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_e:
+                    self.text += 'e'
+                    INPUT_TEXT1 += 'e'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL E) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL E) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL E) self.text is now:", self.text)
+                        print("(OVERFILL E) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_r:
+                    self.text += 'r'
+                    INPUT_TEXT1 += 'r'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL R) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL R) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL R) self.text is now:", self.text)
+                        print("(OVERFILL R) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_t:
+                    self.text += 't'
+                    INPUT_TEXT1 += 't'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL T) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL T) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL T) self.text is now:", self.text)
+                        print("(OVERFILL T) Input Text is now:", INPUT_TEXT1)
+                        
+                if event.key == pygame.K_y:
+                    self.text += 'y'
+                    INPUT_TEXT1 += 'y'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL Y) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL Y) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL Y) self.text is now:", self.text)
+                        print("(OVERFILL Y) Input Text is now:", INPUT_TEXT1) 
+
+                if event.key == pygame.K_u:
+                    self.text += 'u'
+                    INPUT_TEXT1 += 'u'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL U) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL U) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL U) self.text is now:", self.text)
+                        print("(OVERFILL U) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_i:
+                    self.text += 'i'
+                    INPUT_TEXT1 += 'i'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL I) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL I) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL I) self.text is now:", self.text)
+                        print("(OVERFILL I) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_o:
+                    self.text += 'o'
+                    INPUT_TEXT1 += 'o'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL O) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL O) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL O) self.text is now:", self.text)
+                        print("(OVERFILL O) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_p:
+                    self.text += 'p'
+                    INPUT_TEXT1 += 'p'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL P) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL P) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL P) self.text is now:", self.text)
+                        print("(OVERFILL P) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_a:
+                    self.text += 'a'
+                    INPUT_TEXT1 += 'a'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL A) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL A) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL A) self.text is now:", self.text)
+                        print("(OVERFILL A) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_s:
+                    self.text += 's'
+                    INPUT_TEXT1 += 's'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL S) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL S) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL S) self.text is now:", self.text)
+                        print("(OVERFILL S) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_d:
+                    self.text += 'd'
+                    INPUT_TEXT1 += 'd'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL D) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL D) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL D) self.text is now:", self.text)
+                        print("(OVERFILL D) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_f:
+                    self.text += 'f'
+                    INPUT_TEXT1 += 'f'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL F) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL F) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL F) self.text is now:", self.text)
+                        print("(OVERFILL F) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_g:
+                    self.text += 'g'
+                    INPUT_TEXT1 += 'g'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL G) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL G) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL G) self.text is now:", self.text)
+                        print("(OVERFILL G) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_h:
+                    self.text += 'h'
+                    INPUT_TEXT1 += 'h'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL H) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL H) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL H) self.text is now:", self.text)
+                        print("(OVERFILL H) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_j:
+                    self.text += 'j'
+                    INPUT_TEXT1 += 'j'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL J) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL J) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL J) self.text is now:", self.text)
+                        print("(OVERFILL J) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_k:
+                    self.text += 'k'
+                    INPUT_TEXT1 += 'k'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL K) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL K) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL K) self.text is now:", self.text)
+                        print("(OVERFILL K) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_l:
+                    self.text += 'l'
+                    INPUT_TEXT1 += 'l'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL L) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL L) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL L) self.text is now:", self.text)
+                        print("(OVERFILL L) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_z:
+                    self.text += 'z'
+                    INPUT_TEXT1 += 'z'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL Z) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL Z) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL Z) self.text is now:", self.text)
+                        print("(OVERFILL Z) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_x:
+                    self.text += 'x'
+                    INPUT_TEXT1 += 'x'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL X) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL X) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL X) self.text is now:", self.text)
+                        print("(OVERFILL X) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_c:
+                    self.text += 'c'
+                    INPUT_TEXT1 += 'c'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL C) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL C) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL C) self.text is now:", self.text)
+                        print("(OVERFILL C) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_v:
+                    self.text += 'v'
+                    INPUT_TEXT1 += 'v'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL V) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL V) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL V) self.text is now:", self.text)
+                        print("(OVERFILL V) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_b:
+                    self.text += 'b'
+                    INPUT_TEXT1 += 'b'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL B) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL B) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL B) self.text is now:", self.text)
+                        print("(OVERFILL B) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_n:
+                    self.text += 'n'
+                    INPUT_TEXT1 += 'n'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL N) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL N) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL N) self.text is now:", self.text)
+                        print("(OVERFILL N) Input Text is now:", INPUT_TEXT1)
+
+                if event.key == pygame.K_m:
+                    self.text += 'm'
+                    INPUT_TEXT1 += 'm'
+
+                        # set length to  2
+                    if len(self.text) > 3:
+                
+                        # print when length gets too much
+                        print('(OVERFILL M) Length is:', len(self.text) + 1)
+
+                        # remove single character
+                        self.text = self.text[:-1]
+                        INPUT_TEXT1 = INPUT_TEXT1[:-1]
+
+                        # test to see if delete is working
+                        print("(OVERFILL M) Length is now", (len(self.text)) + 1)
+                        print("(OVERFILL M) self.text is now:", self.text)
+                        print("(OVERFILL M) Input Text is now:", INPUT_TEXT1)
 
                 # render text
                 self.render_text()
@@ -455,9 +760,6 @@ GROUP = pygame.sprite.Group(TEXT_B1)
 
 # keep mainloop running
 RUN = True
-
-# show screen started
-start()
 
 # mainloop
 while RUN:
@@ -505,10 +807,10 @@ while RUN:
         if event.type == pygame.QUIT:
             RUN = False
             if RUN == False: 
-                #cur.execute("DROP TABLE game_data")
-                #print('Table Dropped')
-                con.close()             
-                exit()              
+                con.close()   
+                print("(EXIT) Game closed")          
+                exit()         
+
     GROUP.update(event_list)
 
     # actually update screen
