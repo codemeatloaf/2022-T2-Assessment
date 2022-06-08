@@ -15,6 +15,7 @@ FPSCLOCK = pygame.time.Clock()
 HEIGHT, WIDTH = 1200, 600
 WIN = pygame.display.set_mode((HEIGHT, WIDTH), 0, 60)
 CLOCK = pygame.time.Clock()
+pygame.display.set_caption('Game')
 
 # import images
 EXIT_IMG = pygame.image.load('exit_btn.png')
@@ -30,6 +31,10 @@ BLACK = (0, 0, 0)
 pygame.font.init()
 FONT1 = pygame.font.SysFont("GohuFont NF", 92)
 
+# NOTE: remove these 
+X = 400
+Y = 400
+
 # ! == SQL / START ============================================================================================================================================
 
 # empty space between startups
@@ -43,13 +48,13 @@ con = sqlite3.connect('game_data')
 cur = con.cursor()
 
 # player usernames
-def player_usernames():
-    SELECT_Q = """SELECT * FROM game_data;"""
-    cur.execute(SELECT_Q)
-    RECORD = cur.fetchall()
-    print(RECORD)
+def player_username0():
+    SELECT_Q0 = """SELECT * FROM game_data;"""
+    cur.execute(SELECT_Q0)
+    RECORD0 = cur.fetchall()
+    print('{' + Fore.MAGENTA + 'INFO' + Fore.WHITE + '}', RECORD0)
 
-print('(' + Fore.GREEN + 'START'  + Fore.WHITE + ') Users: '), player_usernames()
+print('(' + Fore.GREEN + 'START'  + Fore.WHITE + ') Users: '), player_username0()
 
 # ! == SPRITES ============================================================================================================================================
 
@@ -109,12 +114,21 @@ EXIT_B = Button(1000, 500, EXIT_IMG, 0.5)
 
 # ! == MAINLOOP ============================================================================================================================================
 
+TEXT1 = FONT1.render('TEST', True, BLACK, WHITE)
+
+TEXT1RECT = TEXT1.get_rect()
+
+TEXT1RECT.center = (X // 2, Y // 2)
+
 # make RUN always equal true
 RUN = True
 while RUN:
 
     # fill background white
     WIN.fill(WHITE)
+
+    # display the text on screen
+    WIN.blit(TEXT1, TEXT1RECT)
 
     # exit button draw
     if EXIT_B.draw():
@@ -129,6 +143,7 @@ while RUN:
         con.close()  
 
 # ! == EVENT HANDLER ============================================================================================================================================
+    # NOTE: still no fucking clue what this does
 
     # event handler
     CLOCK.tick(60)
@@ -138,7 +153,7 @@ while RUN:
             RUN = False
             if RUN == False: 
                 con.close()   
-                print("(' + Fore.YELLOW + 'EXIT' + Fore.WHITE + ') Game closed")          
+                print('(' + Fore.YELLOW + 'EXIT' + Fore.WHITE + ') Game closed')          
                 exit()         
 
     # actually update screen

@@ -7,7 +7,7 @@ import sqlite3
 import sys
 import os
 
-# ! == Variables ============================================================================================================================================
+# ! == Variables =============================================================================================================================================
 
 # settings
 FPS = 60
@@ -15,6 +15,7 @@ FPSCLOCK = pygame.time.Clock()
 HEIGHT, WIDTH = 1200, 600
 WIN = pygame.display.set_mode((HEIGHT, WIDTH), 0, 60)
 CLOCK = pygame.time.Clock()
+pygame.display.set_caption('Logscreen')
 
 # colors
 RED = (255, 0, 0)
@@ -69,7 +70,7 @@ def player_usernames():
 # show table at start
 print('(' + Fore.GREEN + 'START' + Fore.WHITE + ') Table on start:'), player_usernames()
 
-# ! == CLASSES ============================================================================================================================================
+# ! == CLASSES ==================================================================================================================================================
 
 # create button class
 class Button():
@@ -254,7 +255,7 @@ class TextInputBox1(pygame.sprite.Sprite):
                     INPUT_TEXT1 = INPUT_TEXT1[:-1]
 
                     # test to see if delete is working
-                    print("(DELETE) Length of text is now", (len(self.text)))
+                    print("(" + Fore.YELLOW + "DELETE" + Fore.WHITE + ") Length of text is now", (len(self.text)))
 
                 # input keys
                 if event.key == pygame.K_q:
@@ -875,7 +876,7 @@ class TextInputBox2(pygame.sprite.Sprite):
                     INPUT_TEXT2 = INPUT_TEXT2[:-1]
 
                     # test to see if delete is working
-                    print("(DELETE) Length of text is now", (len(self.text)))
+                    print("(" + Fore.YELLOW + "DELETE" + Fore.WHITE + ") Length of text is now", (len(self.text)))
 
                 # input keys
                 if event.key == pygame.K_q:
@@ -1379,7 +1380,7 @@ class TextInputBox2(pygame.sprite.Sprite):
 
                 #! END TEXTBOX TWO
 
-# ! == SPRITES ============================================================================================================================================
+# ! == SPRITES ==================================================================================================================================================
 
 # define sprites on screen
 # start & exit buttons
@@ -1396,7 +1397,7 @@ BLANK_B2 = InputBox(490, 290, BLANK_IMG, 1)
 TEXT_B2 = TextInputBox2(500, 300, 80, FONT1)
 GROUP2 = pygame.sprite.Group(TEXT_B2)
 
-# ! == MAINLOOP ============================================================================================================================================
+# ! == MAINLOOP ================================================================================================================================================
 
 # make RUN always equal true
 RUN = True
