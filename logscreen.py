@@ -29,9 +29,10 @@ BLANK_IMG = pygame.image.load('blank_inp.png')
 
 # text input is blank
 INPUT_TEXT1 = ""
+INPUT_TRUE1 = False
 
 # prove start screen happened
-print('(START) Logscreen Started')
+print('(START) Logscreen.pys Started')
 
     
 # SQL variables
@@ -51,7 +52,7 @@ con.commit()
 print('(START) Table Committed')
 
 # show table at start
-print('(START) Table updated to:')
+print('(START) Table on start:')
 os.system('litecli -D game_data.db -e "select * from game_data"')
 
 # create button class
@@ -207,12 +208,6 @@ class TextInputBox1(pygame.sprite.Sprite):
                 # if mouse is colliding
                 self.active = self.rect.collidepoint(event.pos)
 
-                cur.execute("DELETE FROM game_data WHERE usr_id = 1;")
-
-                # check if table is there
-                print('(ACTIVE) Table updated to:')
-                os.system('litecli -D game_data.db -e "select * from game_data"')
-
                 # check active
                 print("(ACTIVE) Input became active")
 
@@ -221,9 +216,7 @@ class TextInputBox1(pygame.sprite.Sprite):
 
                 # set INPUT_TEXT1 as global
                 global INPUT_TEXT1
-
-
-
+                global INPUT_TRUE1 
                     
                 # return key
                 if event.key == pygame.K_RETURN:
@@ -231,6 +224,8 @@ class TextInputBox1(pygame.sprite.Sprite):
                     # start save function
                     if len(self.text) > 0:
                         save()
+                        INPUT_TRUE1 = True
+                        print('(SAVE) Input = True')
                     else:
                         print('(SAVE) Not enough')
 
@@ -770,6 +765,7 @@ while RUN:
     # start button 1 draw
     if START_B1.draw():
         # open game.py
+        print('(START) Button 1 Pressed')
         os.system('python3 game.py')
         RUN = False
         exit()
@@ -777,6 +773,7 @@ while RUN:
     # start button 2 draw
     if START_B2.draw():
         # open game.py
+        print('(START) Button 2 Pressed')
         os.system('python3 game.py')
         RUN = False
         exit()
@@ -788,8 +785,9 @@ while RUN:
         RUN = False
 
         # drop and exit SQL table
+        print('(EXIT) Exit Button Pressed')
         cur.execute("DROP TABLE IF EXISTS game_data")
-        print('Table Dropped')
+        print('(EXIT) Table Dropped')
         con.close()  
 
     # input 1 draw

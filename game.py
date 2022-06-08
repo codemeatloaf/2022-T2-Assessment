@@ -1,63 +1,63 @@
 # imports
 import pygame
-import sys
-import random
 import sqlite3
-from constants import *
-
-# pygame display
-pygame.display.set_caption('Guessing Game')
+import sys
+import os
 
 # variables
 FPS = 60
 FPSCLOCK = pygame.time.Clock()
+HEIGHT, WIDTH = 1200, 600
 WIN = pygame.display.set_mode((HEIGHT, WIDTH), 0, 60)
-BOARD_L = 8
-SIZE = 60
+CLOCK = pygame.time.Clock()
 
+# colors
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 
+# fonts
+pygame.font.init()
+FONT1 = pygame.font.SysFont("GohuFont NF", 92)
+
+# prove start screen happened
+print('(START) Game.py Started')
+
+    
+# SQL variables
+con = sqlite3.connect('game_data.db')
+cur = con.cursor()
+
+# show table at start
+print('(START) Table on start:')
+os.system('litecli -D game_data.db -e "select * from game_data"')
+
+# keep mainloop running
+RUN = True
 
 # mainloop
-pygame.init()
+while RUN:
 
-def start():
-    print('Main Game Started')
+    # fill background white
+    WIN.fill(WHITE)
 
-def main():
+    pass
 
-    start()
+    # event handler
+    CLOCK.tick(60)
+    event_list = pygame.event.get()
+    for event in event_list:
+        if event.type == pygame.QUIT:
+            RUN = False
+            if RUN == False: 
+                con.close()   
+                print("(EXIT) Game closed")          
+                exit()         
 
-    RUN = True
-
-    while RUN:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                RUN = False
-            if RUN == False:
-                pygame.quit()
-
-
-WIN.fill(WHITE)
-
-cnt = 0
-for i in range(1, BOARD_L+1):
-    for z in range(1, BOARD_L+1):
-        
-        # check if current loop value is even
-        if cnt % 2 == 0:
-            pygame.draw.rect(WIN, WHITE, [SIZE*z, SIZE*i, SIZE, SIZE])
-        else:
-            pygame.draw.rect(WIN, BLACK, [SIZE*z, SIZE*i, SIZE, SIZE])
-        cnt += 1
-
-    # since theres an even number of squares go back one value
-    cnt -= 1
-
-# add a border 
-pygame.draw.rect(WIN, BLACK, [SIZE, SIZE, BOARD_L*SIZE, BOARD_L*SIZE], 1)
-
+    # actually update screen
+    pygame.display.update()
 
 # mainloop end
-pygame.display.update()
-FPSCLOCK.tick(FPS)
-main()
+pygame.quit()
